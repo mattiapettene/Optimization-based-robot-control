@@ -1,0 +1,32 @@
+
+
+
+TOKEN: 
+
+
+
+
+PER CLONARE LA CARTELLA IN LOCALE:
+git clone https://github.com/mattiapettene/orc-project
+
+
+PER CARICARE:
+git add .
+git commit -m “something”
+git push origin main              (per verificare di trovarsi in main → git log)
+
+
+
+PER SCARICARE:
+git pull origin main
+
+
+
+
+
+OTHER SETTINGS:
+git config --global user.name "Mattia Pettene"
+git config --global user.email 81318801+mattiapettene@users.noreply.github.com
+
+rm -rf .git 
+
