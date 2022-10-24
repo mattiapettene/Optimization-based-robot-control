@@ -9,61 +9,97 @@ import numpy as np
 import math
 from plot_utils import plot_xy
 import matplotlib.pyplot as plt
-import hw1_conf_v1 as conf
+import hw1_conf as conf
 
 #------- Implement the 3rd order interpolating function here below -------
 def compute_3rd_order_poly_traj(x0, x1, T, dt):
 
+    size = int(T/dt)
+    
     A = np.array([[1,   0,    0,    0], # ingresso
                   [1,   T,   T*T, T*T*T], # uscita 
                   [0,   1, 0, 0],  # VEL ingresso
                   [0, 1, 2*T, 3*T*T]]) # VEL uscita
     
-    b = np.array([x0[0],x1[0],0,0]) # velocities in 0 and 1 = null
-    
-    # A * x = b 
-    
-    #eq0 = Eq((a + b*dt + c*dt*dt + d*dt*dt*dt), x0[0])
-    #eq1 = Eq((a + b*dt + c*dt*dt + d*dt*dt*dt), x0[1])
-    #eq2 = Eq((a + b*dt + c*dt*dt + d*dt*dt*dt), x1[0])
-    #eq3 = Eq((a + b*dt + c*dt*dt + d*dt*dt*dt), x1[1])
-    
-    sol = np.linalg.solve(A,b)
-    
-    #solution
-    
-    a = sol[0]
-    b = sol[1]
-    c = sol[2]
-    d = sol[3]
-    #print(a,b,c,d)
-    # output equations
-    
-    size = int(T/dt)
-    
     if len(x0)==2:
+        bx = np.array([x0[0],x1[0],0,0]) # velocities in 0 and 1 = null
+        by = np.array([x0[1],x1[1],0,0]) # velocities in 0 and 1 = null
+        
+        # A * x = b 
+        
+        #eq0x = Eq((a + b*dt + c*dt*dt + d*dt*dt*dt), x0[0])
+        #eq1x = Eq((a + b*dt + c*dt*dt + d*dt*dt*dt), x1[0])
+        #eq2x = Eq((b + 2*c*dt + 3*d*dt*dt), 0)
+        #eq3x = Eq((b + 2*c*dt + 3*d*dt*dt), 0)
+        
+        #eq0y = Eq((a + b*dt + c*dt*dt + d*dt*dt*dt), x0[1])
+        #eq1y = Eq((a + b*dt + c*dt*dt + d*dt*dt*dt), x1[1])
+        #eq2y = Eq((b + 2*c*dt + 3*d*dt*dt), 0)
+        #eq3y = Eq((b + 2*c*dt + 3*d*dt*dt), 0)
+        
+        xsol = np.linalg.solve(A,bx)
+        ysol = np.linalg.solve(A,by)
+        
+        #solutions
+        
+        xa = xsol[0]
+        xb = xsol[1]
+        xc = xsol[2]
+        xd = xsol[3]
+        
+        ya = ysol[0]
+        yb = ysol[1]
+        yc = ysol[2]
+        yd = ysol[3]
+        #print(a,b,c,d)
+        # output equations
+
+
         x = np.zeros((2, size))  # matrice x,y
         dx = np.zeros((2, size))
         ddx = np.zeros((2, size))
     
         for i in range(size):
-            dt = dt*i
-            for j in range(2):
-                x[j, i] = a + b*dt + c*dt*dt + d*dt*dt*dt
-                dx[j,i] = b + 2*c*dt + 3*d*dt*dt
-                ddx[j,i] = 2*c + 6*d*dt
+            t = dt*i
+            
+            x[0,i] = xa + xb*t + xc*t*t + xd*t*t*t
+            x[1,i] = ya + yb*t + yc*t*t + yd*t*t*t
+            dx[0,i] = xb + 2*xc*t + 3*xd*t*t
+            dx[1,i] = yb + 2*yc*t + 3*yd*t*t
+            ddx[0,i] = 2*xc + 6*xd*t
+            ddx[1,i] = 2*yc + 6*yd*t
+            
         print('----XY----', x)
         return x, dx, ddx
     else:
+        
+        b = np.array([x0[0],x1[0],0,0])
+        
+        sol = np.linalg.solve(A,b)
+    
+        #solution
+        print(sol)
+        a = sol[0]
+        b = sol[1]
+        c = sol[2]
+        d = sol[3]
+        
+        # output equations
+        x = a + b*dt + c*dt*dt + d*dt*dt*dt;
+        dx = b + 2*c*dt + 3*d*dt*dt;
+        ddx = 2*c + 6*d*dt;
+        
+        
         x = np.zeros(size)  # matrice x,y
         dx = np.zeros(size)
         ddx = np.zeros(size)
     
         for i in range(size):
-            dt = dt*i
-            x[i] = a + b*dt + c*dt*dt + d*dt*dt*dt
-            dx[i] = b + 2*c*dt + 3*d*dt*dt
-            ddx[i] = 2*c + 6*d*dt
+            t = dt*i
+            
+            x[i] = a + b*t + c*t*t + d*t*t*t;
+            dx[i] = b + 2*c*t + 3*d*t*t;
+            ddx[i] = 2*c + 6*d*t;
             
         print('----Z----', x)
         return x, dx, ddx
