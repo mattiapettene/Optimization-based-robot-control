@@ -7,7 +7,7 @@ Created on Mon Oct 18 10:31:22 2022
 
 import time
 import numpy as np
-import hw1_conf_v1 as conf
+import hw1_conf_v2 as conf
 from plot_utils import create_empty_figure
 from tsid_biped import TsidBiped
 import numpy as np

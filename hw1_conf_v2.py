@@ -63,14 +63,14 @@ dt = 0.002                      # controller time step
 T_pre  = 1.5                    # simulation time before starting to walk
 T_post = 0                      # simulation time after walking
 
-w_com = 30   #1                 # weight of center of mass task (ref trajectory) 
+w_com = 40   #1                 # weight of center of mass task (ref trajectory) 
 if SQUAT:
     w_squat = 10                # weight of squat task
 else:
     w_squat = 0                 # weight of squat task
-w_foot = 150  #2                # weight of the foot motion task
+w_foot = 50  #2                # weight of the foot motion task
 w_contact = 1e2                 # weight of the foot in contact
-w_posture = 1  #3               # weight of joint posture task
+w_posture = 4  #3               # weight of joint posture task   #OPPURE 3
 w_forceRef = 1e-5               # weight of force regularization task
 w_torque_bounds = 0.0           # weight of the torque bounds
 w_joint_bounds = 0.0            # weight of the joint bounds
