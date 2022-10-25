@@ -1,1 +1,1 @@
-# orc-project
+# Optimization-based robot control project
