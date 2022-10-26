@@ -12,16 +12,19 @@ import matplotlib.pyplot as plt
 import hw1_conf_4_bis as conf
 
 #------- Implement the 3rd order interpolating function here below -------
-def compute_3rd_order_poly_traj(x0, x1, T, dt):
 
+def compute_3rd_order_poly_traj(x0, x1, T, dt):
+    
+    # Consider the polynomial: x(t) = a + bt + ct^2 + dt^3
+
+    A = np.array([[ 1,   0,    0,     0   ],   
+                  [ 1,   T,   T*T,  T*T*T ],   
+                  [ 0,   1,    0,     0   ],  
+                  [ 0,   1,   2*T,  3*T*T ]]) 
+    
     size = int(T/dt)
     
-    A = np.array([[1,   0,    0,    0], # ingresso
-                  [1,   T,   T*T, T*T*T], # uscita 
-                  [0,   1, 0, 0],  # VEL ingresso
-                  [0, 1, 2*T, 3*T*T]]) # VEL uscita
-    
-    if len(x0)==2:
+    if len(x0)==2:    # xy case
         bx = np.array([x0[0],x1[0],0,0]) # velocities in 0 and 1 = null
         by = np.array([x0[1],x1[1],0,0]) # velocities in 0 and 1 = null
         
@@ -51,11 +54,9 @@ def compute_3rd_order_poly_traj(x0, x1, T, dt):
         yb = ysol[1]
         yc = ysol[2]
         yd = ysol[3]
-        #print(a,b,c,d)
-        # output equations
+      
 
-
-        x = np.zeros((2, size))  # matrice x,y
+        x = np.zeros((2, size))
         dx = np.zeros((2, size))
         ddx = np.zeros((2, size))
     
@@ -70,15 +71,17 @@ def compute_3rd_order_poly_traj(x0, x1, T, dt):
             ddx[1,i] = 2*yc + 6*yd*t
             
         print('----XY----', x)
+        
         return x, dx, ddx
-    else:
+    
+    else:  # z case
         
         b = np.array([x0[0],x1[0],0,0])
         
         sol = np.linalg.solve(A,b)
     
         #solution
-        print(sol)
+        #print(sol)
         a = sol[0]
         b = sol[1]
         c = sol[2]
@@ -90,7 +93,7 @@ def compute_3rd_order_poly_traj(x0, x1, T, dt):
         ddx = 2*c + 6*d*dt;
         
         
-        x = np.zeros(size)  # matrice x,y
+        x = np.zeros(size)
         dx = np.zeros(size)
         ddx = np.zeros(size)
     
@@ -102,6 +105,7 @@ def compute_3rd_order_poly_traj(x0, x1, T, dt):
             ddx[i] = 2*c + 6*d*t;
             
         print('----Z----', x)
+        
         return x, dx, ddx
 
 
