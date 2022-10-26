@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Optimization- based robot control project
 
 ### Configuration files legend:
