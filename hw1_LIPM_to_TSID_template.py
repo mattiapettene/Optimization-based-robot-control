@@ -9,7 +9,7 @@ import numpy as np
 import math
 from plot_utils import plot_xy
 import matplotlib.pyplot as plt
-import hw1_conf_4_bis as conf
+import hw1_conf_3 as conf
 
 #------- Implement the 3rd order interpolating function here below -------
 

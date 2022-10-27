@@ -65,7 +65,7 @@ T_post = 0                      # simulation time after walking
 
 w_com = 40                    # weight of center of mass task (ref trajectory)
 if SQUAT:
-    w_squat = 100                # weight of squat task
+    w_squat = 500                # weight of squat task
 else:
     w_squat = 0                 # weight of squat task
 w_foot = 50                   # weight of the foot motion task
