@@ -1,8 +1,5 @@
 # Optimization- based robot control project
 
-![](https://github.com/mattiapettene/orc-project/blob/main/robot.gif)
-
-
 ### Configuration files legend:
 
 h1_conf_1.py = first question, SQUAT = 0, PUSH = 0 <br>
