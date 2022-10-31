@@ -13,4 +13,4 @@ h1_conf_4_bis.py = fourth question, SQUAT = 1, PUSH = 1, w_squat = 10, kp_squat 
 All the files have the following tuned weights: w_com = 40, w_foot = 50, w_posture = 4 <br>
 
 ### Final report: 
-This pdf [file](https://github.com/mattiapettene/orc-project/blob/main/Report_assignment_01.pdf) contains the entire project procedure and all the considerations related to it
+This pdf [file](https://github.com/mattiapettene/orc-project/blob/main/Report_assignment_01.pdf) contains the entire project procedure and all the considerations related to it.
