@@ -1,4 +1,4 @@
-# Optimization- based robot control project
+# Optimization- based robot control - FIRST ASSIGNMENT
 
 ### Configuration files legend:
 
