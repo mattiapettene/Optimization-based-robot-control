@@ -37,27 +37,28 @@ class DDPSolverLinearDyn(DDPSolver):
         cost = self.cost_final(X[-1,:])
         for i in range(N):
             cost += self.cost_running(i, X[i,:], U[i,:])
+        for i in range(N):
+            print(U[i, :])
+       
         return cost
-    for i in range(N):
-        print(U[i,:])
+    
+    
         
     def cost_running(self, i, x, u):                                    
         ''' Running cost at time step i for state x and control u '''
         cost = 0.5*np.dot(x, np.dot(self.H_xx[i,:,:], x)) \
                 + np.dot(self.h_x[i,:].T, x) + self.h_s[i] \
                 + 0.5*self.lmbda*np.dot(u.T, u) \
-                # + ... add here the running cost term for taking into account the underactuation
                 + 0.5*self.underact*np.dot(np.dot(np.array([[0,0],[0,1]]),u).T,np.dot(np.array([[0,0],[0,1]]),u)) 
         if self.CONTROL_BOUNDS:
-            # ... implement here the running cost term for taking into the control limits
             barr = -self.beta*np.log(self.max_torque+self.eps+u)-self.beta*np.log(self.max_torque+self.eps-u)
-            cost += 0.5*self.w_bounds*np.dot(barr.T,barr)
+            cost += 0.5*self.w_bounds*np.dot(barr.T,barr)         
         return cost
         
     def cost_final(self, x):
         ''' Final cost for state x '''
         cost = 0.5*np.dot(x, np.dot(self.H_xx[-1,:,:], x)) \
-                + np.dot(self.h_x[-1,:].T, x) + self.h_s[-1] 
+                + np.dot(self.h_x[-1,:].T, x) + self.h_s[-1]
         return cost
         
     def cost_running_x(self, i, x, u):
@@ -72,10 +73,10 @@ class DDPSolverLinearDyn(DDPSolver):
         
     def cost_running_u(self, i, x, u):
         ''' Gradient of the running cost w.r.t. u '''
-        c_u = self.lmbda * u \
-        # + ... add here the derivative w.r.t u of the running cost term for taking into account the underactuation                            
+        c_u = self.lmbda * u + self.underact*np.array([0,u[1]])   # Modify accordingly the gradient of the running cost w.r.t. u                             
         if self.CONTROL_BOUNDS:
-            # ... implement here the derivative w.r.t u of the running cost term for taking into the control limits
+            barr = -self.beta*np.log(self.max_torque+self.eps+u)-self.beta*np.log(self.max_torque+self.eps-u)
+            c_u += - self.w_bounds*self.beta*barr*(1/(self.max_torque+self.eps+u)-1/(self.max_torque+self.eps-u))
         return c_u
         
     def cost_running_xx(self, i, x, u):
@@ -88,10 +89,12 @@ class DDPSolverLinearDyn(DDPSolver):
         
     def cost_running_uu(self, i, x, u):
         ''' Hessian of the running cost w.r.t. u '''
-        c_uu = self.lmbda * np.eye(self.nu) \
-        # + ... add here the second derivative w.r.t u of the running cost term for taking into account the underactuation
+        c_uu = self.lmbda * np.eye(self.nu) + self.underact*np.diagflat([0,1])      # Modify accordingly the hessian of the running cost w.r.t. u
         if self.CONTROL_BOUNDS:
-            # ... implement here the second derivative w.r.t u of the running cost term for taking into the control limits
+            barr = -self.beta*np.log(self.max_torque+self.eps+u)-self.beta*np.log(self.max_torque+self.eps-u)
+            barr_u = - self.beta*barr*(1/(self.max_torque+self.eps+u)-1/(self.max_torque+self.eps-u))
+            barr_uu = - self.w_bounds*self.beta*(barr_u*(1/(self.max_torque+self.eps+u)-1/(self.max_torque+self.eps-u)) + barr*(-1/(self.max_torque+self.eps+u)**2-1/(self.max_torque+self.eps-u)**2))
+            c_uu += barr_uu
         return c_uu
         
     def cost_running_xu(self, i, x, u):
@@ -183,7 +186,7 @@ class DDPSolverDoublePendulum(DDPSolverLinearDyn):
         self.Fx[nv:, nv:] = data.ddq_dv
 
         if conf.SELECTION_MATRIX==1 and conf.ACTUATION_PENALTY==0:
-            S = np.array([[1.0,0.0],[0.0,0.0]])                        # Selection matrix for taking into account underactuation
+            S = np.array([[1.0,0.0],[0.0,0.0]])                        # Selection matrix for underactuated case
             self.Fu[nv:, :] = data.Minv.dot(S.T)                       # Partial derivatives of system dynamics w.r.t. u    
         elif conf.SELECTION_MATRIX==0 and conf.ACTUATION_PENALTY==1:
             self.Fu[nv:, :] = data.Minv
@@ -225,7 +228,7 @@ class DDPSolverDoublePendulum(DDPSolverLinearDyn):
                 U_sim[i,:] = U_bar[i,:] - KK[i,:,:] @ (X_sim[i,:]-X_bar[i,:])
             # Needed when using the penalty method for taking into account underactuation
             U_sim[i,1] = 0.0                                                                     
-            if PUSH and (i == int(N/8) or i == int(N/4) or i == int(N/2) or i == int(3*N/2)):
+            if PUSH and (i == int(N/8) or i == int(N/4) or i == int(N/2) or i == int(3*N/4)):
                 X_sim[i,int(n/2):] += conf.push_vec
             X_sim[i+1,:] = self.f(X_sim[i,:], U_sim[i,:])
             time_start = time.time()
